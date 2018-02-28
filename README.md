@@ -1,7 +1,13 @@
 # teeworlds-fng2-mod
 FNG mod for teeworlds, that advances the original FNG idea by golden spikes and other features
 
-COMPILE:
+fng2-mod modified by ChillerDragon
+based on https://github.com/nobody-mb/teeworlds-fng2-mod by noby
+based on https://github.com/Jupeyy/teeworlds-fng2-mod by Jupeyy
+based on https://github.com/matricks/teeworlds by Magnus Auvinen
+
+
+# compile
 Note: Under every OS except Windows, you might want to install the mysql client libraries
 
 under debian ``` apt-get install libmysqlclient-dev ```
@@ -23,17 +29,9 @@ bam server_release
 
 Note: tested with gcc5 under debian8, report, if older versions don't work
 
-
-MORE THAN 16 SLOT SERVER:
-change these values:
-src/engine/shared/network.h - NET_MAX_CLIENTS to the value you want
-src/engine/shared/protocol.h - MAX_CLIENTS to the value you want(must be the same as NET_MAX_CLIENTS!!)
-
-AND DON'T FORGOT TO UPDATE YOUR .cfg -> sv_max_clients and your specator slot votes
-
 start.sh is a automatic restart script for linux... start it as screen ./start.sh. You maybe need to write chmod 700 ./start.sh first
 
-What is new towards openfng?
+# What is new towards openfng?
 -Golden Spikes
 -Support for upto 256 players
 -New Score Display (sv_score_display) that calculates points based on all stats(deaths, hits etc.)
