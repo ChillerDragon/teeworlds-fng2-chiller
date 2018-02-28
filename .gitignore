@@ -21,6 +21,7 @@ tileset_border*
 Debug
 src/game/server/crash.h
 _test.exe
-leaving.txt
-*.txt
 stats/*
+leaving.txt
+hook.txt
+delay.txt
