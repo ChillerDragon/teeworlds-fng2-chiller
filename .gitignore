@@ -11,6 +11,7 @@ crash.h
 crapnet*
 dilate*
 fake_server*
+serverlaunch_*
 map_resave*
 map_version*
 packetgen*
