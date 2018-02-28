@@ -908,12 +908,34 @@ void tstats::on_msg (const char *message, int ClientID)
 				printf("invalid player %s\n", namebuf);
 			}
 			else {
-				stats_private(namebuf, ClientID, tmp, 1);
+				stats_private(namebuf, ClientID, tmp, 0);
 			}
 		}
 		else {
 			if ((tmp = current[ClientID]))
 				stats_private(ID_NAME(ClientID), ClientID, tmp, 0);
+		}
+	}
+	else if (strncmp(message, "/test2", 6) == 0) {
+		struct tee_stats tmp;
+		if (strlen(message) > 7) {
+			char namebuf[64] = { 0 };
+			strcpy(namebuf, message + 7);
+			char *ptr = namebuf + strlen(namebuf) - 1;
+			if (*ptr == ' ')
+				*ptr = 0;
+			tmp = read_statsfile(namebuf, 0);
+			if (!tmp.shots) {
+				SendChatTarget(ClientID, "invalid player");
+				printf("invalid player %s\n", namebuf);
+			}
+			else {
+				stats_private(namebuf, ClientID, &tmp, 1);
+			}
+		}
+		else {
+			tmp = read_statsfile(ID_NAME(ClientID), 0);
+			stats_private(ID_NAME(ClientID), ClientID, &tmp, 1);
 		}
 	} else if (strncmp(message, "/top", 3) == 0 || strncmp(message, "/few", 3) == 0) { 
 		int tl = (int)time(NULL) - last_reqd;

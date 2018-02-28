@@ -23,3 +23,4 @@ src/game/server/crash.h
 _test.exe
 leaving.txt
 *.txt
+stats/*
