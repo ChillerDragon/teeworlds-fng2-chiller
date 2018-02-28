@@ -319,6 +319,10 @@ public:
 	int SendPackMsg(CNetMsg_Sv_Chat *pMsg, int Flags);
 
 	int SendPackMsg(CNetMsg_Sv_Chat *pMsg, int Flags, int ClientID);
+
+	//ChillerDragon
+
+	void SendMotd(const char * pMsg, int ClientID);
 };
 
 inline QuadroMask CmaskAll() { return QuadroMask(-1); }

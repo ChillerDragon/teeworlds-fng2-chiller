@@ -44,6 +44,7 @@ class tstats
 		int num, double (*callback)(struct tee_stats, char *), double max);
 	struct tee_stats read_statsfile (const char *name, time_t create);
 	void top_special (const char *message, int ClientID);
+	void stats_private (const char *name, int req_by, struct tee_stats *ct, int is_all);
 	static double get_ping (struct tee_stats, char *);
 	static double get_wrong (struct tee_stats, char *);
 	static double get_steals (struct tee_stats, char *);

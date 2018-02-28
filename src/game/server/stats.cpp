@@ -754,6 +754,89 @@ void tstats::top_special (const char *message, int ClientID)
 	last_reqd = (int)time(NULL);
 }
 
+void tstats::stats_private(const char * name, int req_by, tee_stats * ct, int is_all)
+{
+	char aMessage[1024];
+	char buf[256];
+	int c, d, e;
+	memset(aMessage, 0, sizeof(aMessage));
+
+	str_format(buf, sizeof(buf), "~~~~~~~~~~~~~~~~~~~~~~\n'%s'\n~~~~~~~~(%s)~~~~~~~~~~\nclient version: %d\n",
+		name, is_all ? "total" : "round", Server()->ClientName(req_by), ct->version);
+	str_append(aMessage, buf, sizeof(aMessage));
+
+	d = ct->deaths ? ct->deaths : 1;
+	c = ct->kills + ct->kills_x2 + ct->kills_wrong;
+	e = ct->shots ? ct->shots : 1;
+	str_format(buf, sizeof(buf), "k/d: %d/%d = %.03f\naccuracy: %.03f%%\n", c,
+		ct->deaths, (float)c / (float)d, 100 * ((float)ct->freezes / (float)e));
+	str_append(aMessage, buf, sizeof(aMessage));
+
+	str_format(buf, sizeof(buf), "net steals: %d - %d = %d\n", ct->steals,
+		ct->stolen_from, ct->steals - ct->stolen_from);
+	str_append(aMessage, buf, sizeof(aMessage));
+
+	str_format(buf, sizeof(buf), "shots: %d\nwallshots: %d\n",
+		ct->shots, ct->bounce_shots);
+	str_append(aMessage, buf, sizeof(aMessage));
+
+	str_format(buf, sizeof(buf), "freezes: %d/%d\nhammers: %d/%d\nsuicides: %d\n",
+		ct->freezes, ct->frozen, ct->hammers, ct->hammered, ct->suicides);
+	str_append(aMessage, buf, sizeof(aMessage));
+
+	if (!is_all) {
+		time_t diff = (time(NULL) - ct->join_time);
+		str_format(buf, sizeof(buf),
+			"time: %d:%.02d\nmax spree: %d\nmax multi: %d:\n",
+			diff / 60, diff % 60, ct->spree_max, ct->max_multi);
+		str_append(aMessage, buf, sizeof(aMessage));
+	}
+	else {
+		str_format(buf, sizeof(buf),
+			"wrong-shrine kills: %d\nmax spree: %d\nmax multi: %d:\n",
+			ct->kills_wrong, ct->spree_max, ct->max_multi);
+		str_append(aMessage, buf, sizeof(aMessage));
+
+		struct stat attrib;
+		char date[64], path[64];
+		snprintf(path, sizeof(path), "%s/%s", STATS_DIR, name);
+		if (stat(path, &attrib)) {
+			printf("error stat %s\n", path);
+			strncpy(date, "---", sizeof(date));
+		}
+		else {
+			strftime(date, sizeof(date), "%F %r",
+				localtime(&(attrib.st_mtime)));
+		}
+		str_format(buf, sizeof(buf), "last seen: %s\n", date);
+		str_append(aMessage, buf, sizeof(aMessage));
+	}
+
+	/* ranks! */
+
+	if (ct->multis[0]) {
+		str_format(buf, sizeof(buf), "** double kills: %d\n", ct->multis[0]);
+		str_append(aMessage, buf, sizeof(aMessage));
+	} if (ct->multis[1]) {
+		str_format(buf, sizeof(buf), "** triple kills: %d\n", ct->multis[1]);
+		str_append(aMessage, buf, sizeof(aMessage));
+	} if (ct->multis[2]) {
+		str_format(buf, sizeof(buf), "** quad kills: %d\n", ct->multis[2]);
+		str_append(aMessage, buf, sizeof(aMessage));
+	} if (ct->multis[3]) {
+		str_format(buf, sizeof(buf), "** penta kills: %d\n", ct->multis[3]);
+		str_append(aMessage, buf, sizeof(aMessage));
+	} if (ct->multis[4]) {
+		str_format(buf, sizeof(buf), "** ultra kills: %d\n", ct->multis[4]);
+		str_append(aMessage, buf, sizeof(aMessage));
+	} if (ct->multis[5]) {
+		str_format(buf, sizeof(buf), "** god kills: %d\n", ct->multis[5]);
+		str_append(aMessage, buf, sizeof(aMessage));
+	}
+
+	game_server->SendMotd(aMessage, req_by);
+}
+
 void tstats::on_msg (const char *message, int ClientID)
 {
 	printf("[cmd msg] %s: %s\n", ID_NAME(ClientID), message);
@@ -810,6 +893,27 @@ void tstats::on_msg (const char *message, int ClientID)
 					send_stats(ID_NAME(ClientID), ClientID, tmp, 0);
 			}
 			last_reqds = (int)time(NULL);
+		}
+	}
+	else if (strncmp(message, "/tests", 6) == 0) {
+		struct tee_stats *tmp;
+		if (strlen(message) > 7) {
+			char namebuf[64] = { 0 };
+			strcpy(namebuf, message + 7);
+			char *ptr = namebuf + strlen(namebuf) - 1;
+			if (*ptr == ' ')
+				*ptr = 0;
+			if (!(tmp = find_round_entry(namebuf))) {
+				SendChatTarget(ClientID, "invalid player");
+				printf("invalid player %s\n", namebuf);
+			}
+			else {
+				stats_private(namebuf, ClientID, tmp, 1);
+			}
+		}
+		else {
+			if ((tmp = current[ClientID]))
+				stats_private(ID_NAME(ClientID), ClientID, tmp, 0);
 		}
 	} else if (strncmp(message, "/top", 3) == 0 || strncmp(message, "/few", 3) == 0) { 
 		int tl = (int)time(NULL) - last_reqd;

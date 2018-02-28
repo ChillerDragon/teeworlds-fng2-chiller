@@ -2389,6 +2389,13 @@ int CGameContext::SendPackMsg(CNetMsg_Sv_Chat *pMsg, int Flags, int ClientID)
 	return 0;
 }
 
+void CGameContext::SendMotd(const char * pMsg, int ClientID)
+{
+	CNetMsg_Sv_Motd Msg;
+	Msg.m_pMessage = pMsg;
+	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientID);
+}
+
 IGameServer *CreateGameServer() { return new CGameContext; }
 
 void CGameContext::Mute(const char *pIP, int Secs, const char *pDisplayName)
