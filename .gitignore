@@ -20,3 +20,4 @@ tileset_border*
 .vs
 Debug
 src/game/server/crash.h
+_test.exe
