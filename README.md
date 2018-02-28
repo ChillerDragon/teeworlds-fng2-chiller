@@ -2,8 +2,11 @@
 FNG mod for teeworlds, that advances the original FNG idea by golden spikes and other features
 
 fng2-mod modified by ChillerDragon
+
 based on https://github.com/nobody-mb/teeworlds-fng2-mod by noby
+
 based on https://github.com/Jupeyy/teeworlds-fng2-mod by Jupeyy
+
 based on https://github.com/matricks/teeworlds by Magnus Auvinen
 
 
