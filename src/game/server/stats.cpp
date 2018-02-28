@@ -762,7 +762,7 @@ void tstats::stats_private(const char * name, int req_by, tee_stats * ct, int is
 	memset(aMessage, 0, sizeof(aMessage));
 
 	str_format(buf, sizeof(buf), "~~~~~~~~~~~~~~~~~~~~~~\n'%s'\n~~~~~~~~(%s)~~~~~~~~~~\nclient version: %d\n",
-		name, is_all ? "total" : "round", Server()->ClientName(req_by), ct->version);
+		name, is_all ? "total" : "round", ct->version);
 	str_append(aMessage, buf, sizeof(aMessage));
 
 	d = ct->deaths ? ct->deaths : 1;
